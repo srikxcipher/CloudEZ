@@ -1,4 +1,849 @@
 Command: aws s3 ls
 Output:
 2024-09-21 12:38:00 infrastructurecode001
+[cloudshell-user@ip-10-130-6-101 ~]$ 
+[cloudshell-user@ip-10-130-6-101 ~]$ aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name'
+[
+    [
+        "running"
+    ]
+]
+[cloudshell-user@ip-10-130-6-101 ~]$ aws ec2 describe-instances --query 'Reservations[*].Instances[*].{ID:InstanceId,PublicIP:PublicIpAddress}' --output table
+-----------------------------------------
+|           DescribeInstances           |
++----------------------+----------------+
+|          ID          |   PublicIP     |
++----------------------+----------------+
+|  i-001e36e5e566cf598 |  3.111.147.48  |
++----------------------+----------------+
+[cloudshell-user@ip-10-130-6-101 ~]$ telnet 3.111.147.48 22
+-bash: telnet: command not found
+[cloudshell-user@ip-10-130-6-101 ~]$ sudo apt update
+sudo: apt: command not found
+[cloudshell-user@ip-10-130-6-101 ~]$ apt update
+-bash: apt: command not found
+[cloudshell-user@ip-10-130-6-101 ~]$ yum update
+Error: This command has to be run with superuser privileges (under the root user on most systems).
+[cloudshell-user@ip-10-130-6-101 ~]$ sudo yum install telnet
+Last metadata expiration check: 1:23:59 ago on Sat 21 Sep 2024 12:04:16 PM UTC.
+Dependencies resolved.
+==========================================================================================================================================================================================
+ Package                                Architecture                           Version                                                  Repository                                   Size
+==========================================================================================================================================================================================
+Installing:
+ telnet                                 x86_64                                 1:0.17-83.amzn2023.0.2                                   amazonlinux                                  64 k
+
+Transaction Summary
+==========================================================================================================================================================================================
+Install  1 Package
+
+Total download size: 64 k
+Installed size: 121 k
+Is this ok [y/N]: y
+Downloading Packages:
+telnet-0.17-83.amzn2023.0.2.x86_64.rpm                                                                                                                    1.2 MB/s |  64 kB     00:00    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                                      51 kB/s |  64 kB     00:01     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                                                  1/1 
+Running transaction
+  Preparing        :                                                                                                                                                                  1/1 
+  Installing       : telnet-1:0.17-83.amzn2023.0.2.x86_64                                                                                                                             1/1 
+  Running scriptlet: telnet-1:0.17-83.amzn2023.0.2.x86_64                                                                                                                             1/1 
+  Verifying        : telnet-1:0.17-83.amzn2023.0.2.x86_64                                                                                                                             1/1 
+
+Installed:
+  telnet-1:0.17-83.amzn2023.0.2.x86_64                                                                                                                                                    
+
+Complete!
+[cloudshell-user@ip-10-130-6-101 ~]$ telnet 3.111.147.48 22                                                                                                                               
+Trying 3.111.147.48...
+Connected to 3.111.147.48.
+Escape character is '^]'.
+SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.4
+^
+Invalid SSH identification string.
+Connection closed by foreign host.
+[cloudshell-user@ip-10-130-6-101 ~]$ sudo systemctl status sshd
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to bus: Host is down
+[cloudshell-user@ip-10-130-6-101 ~]$ sudo systemctl status httpd
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to bus: Host is down
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation validate-template --template-body file://infrastructurecode.yaml
+{
+    "Parameters": [
+        {
+            "ParameterKey": "KeyName",
+            "DefaultValue": "newkeypair",
+            "NoEcho": false,
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access"
+        },
+        {
+            "ParameterKey": "InstanceName",
+            "DefaultValue": "InfrastructureCode",
+            "NoEcho": false,
+            "Description": "Name for the EC2 instance(s)"
+        },
+        {
+            "ParameterKey": "PublicSubnetCIDR",
+            "DefaultValue": "10.0.1.0/24",
+            "NoEcho": false,
+            "Description": "CIDR block for the public subnet"
+        },
+        {
+            "ParameterKey": "VpcCIDR",
+            "DefaultValue": "10.0.0.0/16",
+            "NoEcho": false,
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation update-stack --stack-name MyInfrastructureStack \
+>     --template-body file://infrastructurecode.yaml \
+>     --capabilities CAPABILITY_IAM
+>     --template-body file://infrastructurecode.yaml \
+>     --capabilities CAPABILITY_IAM
+
+An error occurred (ValidationError) when calling the UpdateStack operation: No updates are to be performed.
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+[
+    {
+        "OutputKey": "VPCId",
+        "OutputValue": "vpc-0b6894772b45c3172",
+        "Description": "VPC Id",
+        "ExportName": "MyInfrastructureStack-VPCId"
+    },
+    {
+        "OutputKey": "EC2AutoScalingGroupName",
+        "OutputValue": "MyInfrastructureStack-ASG",
+        "Description": "Auto Scaling Group Name"
+    },
+    {
+        "OutputKey": "S3BucketName",
+        "OutputValue": "infrastructurecode00l",
+        "Description": "S3 bucket name",
+        "ExportName": "MyInfrastructureStack-S3BucketName"
+    }
+]
+[cloudshell-user@ip-10-130-6-101 ~]$ nano infrastructurecode.yaml 
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation validate-template --template-body file://infrastructurecode.yaml
+{
+    "Parameters": [
+        {
+            "ParameterKey": "KeyName",
+            "DefaultValue": "newkeypair",
+            "NoEcho": false,
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access"
+        },
+        {
+            "ParameterKey": "InstanceName",
+            "DefaultValue": "InfrastructureCode",
+            "NoEcho": false,
+            "Description": "Name for the EC2 instance(s)"
+        },
+        {
+            "ParameterKey": "PublicSubnetCIDR",
+            "DefaultValue": "10.0.1.0/24",
+            "NoEcho": false,
+            "Description": "CIDR block for the public subnet"
+        },
+        {
+            "ParameterKey": "VpcCIDR",
+            "DefaultValue": "10.0.0.0/16",
+            "NoEcho": false,
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation update-stack --stack-name MyInfrastructureStack \
+>     --template-body file://infrastructurecode.yaml \
+>     --capabilities CAPABILITY_IAM
+{
+    "StackId": "arn:aws:cloudformation:ap-south-1:471112533020:stack/MyInfrastructureStack/23f9ecd0-7816-11ef-93a3-06979ecef68f"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].StackStatus'
+"UPDATE_COMPLETE"
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+[
+    {
+        "OutputKey": "VPCId",
+        "OutputValue": "vpc-0b6894772b45c3172",
+        "Description": "VPC Id",
+        "ExportName": "MyInfrastructureStack-VPCId"
+    },
+    {
+        "OutputKey": "EC2AutoScalingGroupName",
+        "OutputValue": "MyInfrastructureStack-ASG",
+        "Description": "Auto Scaling Group Name"
+    },
+    {
+        "OutputKey": "S3BucketName",
+        "OutputValue": "infrastructurecode00l",
+        "Description": "S3 bucket name",
+        "ExportName": "MyInfrastructureStack-S3BucketName"
+    }
+]
+[cloudshell-user@ip-10-130-6-101 ~]$ nano infrastructurecode.yaml                                                                                                                         
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation validate-template --template-body file://infrastructurecode.yaml
+{
+    "Parameters": [
+        {
+            "ParameterKey": "KeyName",
+            "DefaultValue": "newkeypair",
+            "NoEcho": false,
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access"
+        },
+        {
+            "ParameterKey": "InstanceName",
+            "DefaultValue": "InfrastructureCode",
+            "NoEcho": false,
+            "Description": "Name for the EC2 instance(s)"
+        },
+        {
+            "ParameterKey": "PublicSubnetCIDR",
+            "DefaultValue": "10.0.1.0/24",
+            "NoEcho": false,
+            "Description": "CIDR block for the public subnet"
+        },
+        {
+            "ParameterKey": "VpcCIDR",
+            "DefaultValue": "10.0.0.0/16",
+            "NoEcho": false,
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation update-stack --stack-name MyInfrastructureStack \
+>     --template-body file://infrastructurecode.yaml \
+>     --capabilities CAPABILITY_IAM
+{
+    "StackId": "arn:aws:cloudformation:ap-south-1:471112533020:stack/MyInfrastructureStack/23f9ecd0-7816-11ef-93a3-06979ecef68f"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].StackStatus'
+"UPDATE_COMPLETE"
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+[
+    {
+        "OutputKey": "VPCId",
+        "OutputValue": "vpc-0b6894772b45c3172",
+        "Description": "VPC Id",
+        "ExportName": "MyInfrastructureStack-VPCId"
+    },
+    {
+        "OutputKey": "EC2AutoScalingGroupName",
+        "OutputValue": "MyInfrastructureStack-ASG",
+        "Description": "Auto Scaling Group Name"
+    },
+    {
+        "OutputKey": "S3BucketName",
+        "OutputValue": "infrastructurecode00l",
+        "Description": "S3 bucket name",
+        "ExportName": "MyInfrastructureStack-S3BucketName"
+    }
+]
+[cloudshell-user@ip-10-130-6-101 ~]$ aws ec2 reboot-instances --instance-ids i-001e36e5e566cf598
+[cloudshell-user@ip-10-130-6-101 ~]$ aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[0].Instances[0].State'
+{
+    "Code": 16,
+    "Name": "running"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ nano infrastructurecode.yaml 
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation update-stack --stack-name MyInfrastructureStack \
+>     --template-body file://infrastructurecode.yaml \
+>     --capabilities CAPABILITY_IAM
+
+An error occurred (ValidationError) when calling the UpdateStack operation: Template format error: YAML not well-formed. (line 167, column 3)
+[cloudshell-user@ip-10-130-6-101 ~]$ nano infrastructurecode.yaml 
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation update-stack --stack-name MyInfrastructureStack \
+>     --template-body file://infrastructurecode.yaml \
+>     --capabilities CAPABILITY_IAM
+{
+    "StackId": "arn:aws:cloudformation:ap-south-1:471112533020:stack/MyInfrastructureStack/23f9ecd0-7816-11ef-93a3-06979ecef68f"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].StackStatus'"UPDATE_COMPLETE"
+[cloudshell-user@ip-10-130-6-101 ~]$ aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[0].Instances[0].State'
+{
+    "Code": 16,
+    "Name": "running"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ history
+    1  whoami
+    2  clear
+    3  nano infrastructurecode.yaml
+    4  clear
+    5  ls
+    6  aws cloudformation validate-template --template-body file://infrastructurecode.yaml
+    7  aws cloudformation create-stack --stack-name MyInfrastructureStack --template-body file://infrastructure.yaml --parameters ParameterKey=KeyName,ParameterValue=newkeypair
+    8  aws cloudformation create-stack --stack-name MyInfrastructureStack --template-body file://infrastructurecode.yaml --parameters ParameterKey=KeyName,ParameterValue=newkeypair
+    9  aws cloudformation create-stack --stack-name MyInfrastructureStack --template-body file://infrastructurecode.yaml --parameters ParameterKey=KeyName,ParameterValue=newkeypair --capabilities CAPABILITY_IAM
+   10  aws cloudformation describe-stacks --stack-name MyInfrastructureStack
+   11  aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+   12  aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=MyInfrastructureStack"
+   13  aws cloudwatch get-metric-data --metric-name CPUUtilization --namespace AWS/EC2 --dimensions Name=InstanceId,Value=i-001e36e5e566cf598
+   14  aws cloudwatch get-metric-data     --metric-data-queries '[{"Id": "cpuUtilization", "MetricStat": {"MetricName": "CPUUtilization", "Period": 300, "Stat": "Average", "Dimensions": [{"Name": "InstanceId", "Value": "i-001e36e5e566cf598"}]}}, "ReturnData": true]'     --start-time 2024-09-20T00:00:00Z     --end-time 2024-09-21T00:00:00Z
+   15  aws cloudwatch get-metric-data     --metric-data-queries '[{"Id": "cpuUtilization", "MetricStat": {"MetricName": "CPUUtilization", "Period": 300, "Stat": "Average", "Dimensions": [{"Name": "InstanceId", "Value": "i-001e36e5e566cf598"}]},"ReturnData": true}]'     --start-time 2024-09-20T00:00:00Z     --end-time 2024-09-21T00:00:00Z
+   16  aws cloudwatch get-metric-data  --metric-data-queries '[{"Id": "cpuUtilization", "MetricStat": {"Metric": "CPUUtilization", "Period": 300, "Stat": "Average", "Dimensions": [{"Name": "InstanceId", "Value": "i-001e36e5e566cf598"}]},"ReturnData": true}]'  --start-time 2024-09-20T00:00:00Z  --end-time 2024-09-21T00:00:00Z
+   17  aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+   18  aws ec2 monitor-instances --instance-ids i-0abcd1234efgh5678
+   19  aws ec2 monitor-instances --instance-ids i-001e36e5e566cf598
+   20  aws ec2 describe-instances --instance-ids i-0abcd1234efgh5678 --query 'Reservations[*].Instances[*].{State:State,Status:InstanceStatus}'
+   21  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598  --query 'Reservations[*].Instances[*].{State:State,Status:InstanceStatus}'
+   22  aws ec2 describe-instance-status --instance-ids i-0abcd1234efgh5678
+   23  aws ec2 describe-instance-status --instance-ids i-001e36e5e566cf598
+   24  aws cloudwatch get-metric-data --metric-name CPUUtilization --namespace AWS/EC2 --dimensions Name=InstanceId,Value= i-001e36e5e566cf598
+   25  aws cloudwatch get-metric-data --metric-data-queries '[{"Id": "cpuUtilization", "MetricStat": {"Metric": "CPUUtilization", "Period": 300, "Stat": "Average", "Dimensions": [{"Name": "InstanceId", "Value": "i-0abcd1234efgh5678"}]},"ReturnData": true}]' --start-time 2024-09-21T00:00:00Z --end-time 2024-09-21T23:59:59Z
+   26  aws cloudwatch get-metric-data  --metric-data-queries '[
+      {
+        "Id": "cpuUtilization",
+        "MetricStat": {
+          "Metric": "CPUUtilization",
+          "Period": 300,
+          "Stat": "Average",
+          "Unit": "Percent",
+          "Dimensions": [
+            {
+              "Name": "InstanceId",
+              "Value": "i-0abcd1234efgh5678"
+            }
+          ]
+        },
+        "ReturnData": true
+      }
+    ]'  --start-time 2024-09-21T00:00:00Z  --end-time 2024-09-21T23:59:59Z
+   27  nano infrastructurecode.yaml
+   28  aws cloudformation validate-template --template-body file://infrastructurecode.yaml
+   29  aws cloudformation update-stack --stack-name MyInfrastructureStack --template-body file://infrastructurecode.yaml --parameters ParameterKey=KeyName,ParameterValue=newkeypair
+   30  aws cloudformation update-stack --stack-name MyInfrastructureStack --template-body file://infrastructurecode.yaml --parameters ParameterKey=KeyName,ParameterValue=newkeypair --capabilities CAPABILITY_IAM
+   31  aws cloudformation describe-stacks --stack-name MyInfrastructureStack
+   32  aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+   33  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text
+   34  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name, Reservations[*].Instances[*].PublicIpAddress'
+   35  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name Reservations[*].Instances[*].PublicIpAddress'
+   36  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name Reservations[*].Instances[*].PublicIpAddress' --output text
+   37  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name.Reservations[*].Instances[*].PublicIpAddress' --output text
+   38  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name.Reservations[*].Instances[*].PublicIpAddress'
+   39  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name,Reservations[*].Instances[*].PublicIpAddress'
+   40  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].Reservations[*].Instances[*].PublicIpAddress'
+   41  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name'
+   42  aws ec2 describe-instances --query 'Reservations[*].Instances[*].{ID:InstanceId,PublicIP:PublicIpAddress}' --output table
+   43  telnet 3.111.147.48 22
+   44  sudo apt update
+   45  apt update
+   46  yum update
+   47  sudo yum install telnet
+   48  telnet 3.111.147.48 22
+   49  sudo systemctl status sshd
+   50  sudo systemctl status httpd
+   51  aws cloudformation validate-template --template-body file://infrastructurecode.yaml
+   52  aws cloudformation update-stack --stack-name MyInfrastructureStack     --template-body file://infrastructurecode.yaml     --capabilities CAPABILITY_IAM
+   53  aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+   54  nano infrastructurecode.yaml 
+   55  aws cloudformation validate-template --template-body file://infrastructurecode.yaml
+   56  aws cloudformation update-stack --stack-name MyInfrastructureStack     --template-body file://infrastructurecode.yaml     --capabilities CAPABILITY_IAM
+   57  aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].StackStatus'
+   58  aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+   59  nano infrastructurecode.yaml 
+   60  aws cloudformation validate-template --template-body file://infrastructurecode.yaml
+   61  aws cloudformation update-stack --stack-name MyInfrastructureStack     --template-body file://infrastructurecode.yaml     --capabilities CAPABILITY_IAM
+   62* 
+   63  aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].Outputs'
+   64  aws ec2 reboot-instances --instance-ids i-001e36e5e566cf598
+   65  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[0].Instances[0].State'
+   66  nano infrastructurecode.yaml 
+   67  aws cloudformation update-stack --stack-name MyInfrastructureStack     --template-body file://infrastructurecode.yaml     --capabilities CAPABILITY_IAM
+   68  nano infrastructurecode.yaml 
+   69  aws cloudformation update-stack --stack-name MyInfrastructureStack     --template-body file://infrastructurecode.yaml     --capabilities CAPABILITY_IAM
+   70  aws cloudformation describe-stacks --stack-name MyInfrastructureStack --query 'Stacks[0].StackStatus'
+   71  aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[0].Instances[0].State'
+   72  history
+[cloudshell-user@ip-10-130-6-101 ~]$ aws sns create-topic --name HighCPUAlerts
+{
+    "TopicArn": "arn:aws:sns:ap-south-1:471112533020:HighCPUAlerts"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws sns subscribe --topic-arn arn:aws:sns:ap-south-1:471112533020:HighCPUAlerts \
+>     --protocol email --notification-endpoint darknightarises321@gmail.com
+{
+    "SubscriptionArn": "pending confirmation"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws sns list-topics
+{
+    "Topics": [
+        {
+            "TopicArn": "arn:aws:sns:ap-south-1:471112533020:HighCPUAlerts"
+        }
+    ]
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws sns delete-topic --topic-arn arn:aws:sns:ap-south-1:471112533020:HighCPUAlerts
+[cloudshell-user@ip-10-130-6-101 ~]$ aws sns list-topics
+{
+    "Topics": []
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws sns create-topic --name HighCPUAlerts
+{
+    "TopicArn": "arn:aws:sns:ap-south-1:471112533020:HighCPUAlerts"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws cloudwatch put-metric-alarm --alarm-name HighCPUAlarm \
+>     --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average \
+>     --period 300 --threshold 80 --comparison-operator GreaterThanThreshold \
+>     --dimensions Name=InstanceId,Value=i-001e36e5e566cf598 \
+>     --evaluation-periods 1 --alarm-actions arn:aws:sns:ap-south-1:471112533020:HighCPUAlerts \
+>     --unit Percent
+[cloudshell-user@ip-10-130-6-101 ~]$ aws ec2 monitor-instances --instance-ids i-001e36e5e566cf598
+{
+    "InstanceMonitorings": [
+        {
+            "InstanceId": "i-001e36e5e566cf598",
+            "Monitoring": {
+                "State": "enabled"
+            }
+        }
+    ]
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ git init
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint: 
+hint:   git config --global init.defaultBranch <name>
+hint: 
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint: 
+hint:   git branch -m <name>
+Initialized empty Git repository in /home/cloudshell-user/.git/
+[cloudshell-user@ip-10-130-6-101 ~]$ git add .
+[cloudshell-user@ip-10-130-6-101 ~]$ git commit -m "Initial commit of CloudFormation template"
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: empty ident name (for <cloudshell-user@ip-10-130-6-101.ap-south-1.compute.internal>) not allowed
+[cloudshell-user@ip-10-130-6-101 ~]$ Omit --global
+-bash: Omit: command not found
+[cloudshell-user@ip-10-130-6-101 ~]$ git config --global user.email "pandasrikant365@gmail.com"
+[cloudshell-user@ip-10-130-6-101 ~]$ git config --global user.name "srikxcipher"
+[cloudshell-user@ip-10-130-6-101 ~]$ git --version
+git version 2.40.1
+[cloudshell-user@ip-10-130-6-101 ~]$ git init
+Reinitialized existing Git repository in /home/cloudshell-user/.git/
+[cloudshell-user@ip-10-130-6-101 ~]$ git add .
+[cloudshell-user@ip-10-130-6-101 ~]$ git commit -m "Initial commit with infrastructure code and setup"
+[master (root-commit) 73e7c00] Initial commit with infrastructure code and setup
+ 9 files changed, 344 insertions(+)
+ create mode 100644 .bash_logout
+ create mode 100644 .bash_profile
+ create mode 100644 .bashrc
+ create mode 100644 .config/powershell/Microsoft.PowerShell_profile.ps1
+ create mode 100644 .gitconfig
+ create mode 100644 .lesshst
+ create mode 100644 .zprofile
+ create mode 100644 .zshrc
+ create mode 100644 infrastructurecode.yaml
+[cloudshell-user@ip-10-130-6-101 ~]$ git remote add origin https://github.com/srikxcipher/CloudFormEZ.git
+[cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin master
+Username for 'https://github.com': ^C
+[cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin main
+error: src refspec main does not match any
+error: failed to push some refs to 'https://github.com/srikxcipher/CloudFormEZ.git'
+[cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin master
+Username for 'https://github.com': srikxcipher
+Password for 'https://srikxcipher@github.com': 
+remote: Support for password authentication was removed on August 13, 2021.
+remote: Please see https://docs.github.com/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+fatal: Authentication failed for 'https://github.com/srikxcipher/CloudFormEZ.git/'
+[cloudshell-user@ip-10-130-6-101 ~]$ eval "$(ssh-agent -s)"
+Agent pid 623
+[cloudshell-user@ip-10-130-6-101 ~]$ ssh-keygen -t rsa -b 4096 -C "pandasrikant365@gmail.com"
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/cloudshell-user/.ssh/id_rsa):       
+Created directory '/home/cloudshell-user/.ssh'.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/cloudshell-user/.ssh/id_rsa
+Your public key has been saved in /home/cloudshell-user/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:KZvAxyy1CylcPM9c26FSSEKg5s1cQP8hoUW7SaCjH/4 pandasrikant365@gmail.com
+The key's randomart image is:
++---[RSA 4096]----+
+|  o*++.          |
+| ...*oo.         |
+|.+ .+*o.o .      |
+|+.=ooX=+.= .     |
+|..++*o@.S .      |
+| o o = *         |
+|  o   +          |
+|   .             |
+|    E            |
++----[SHA256]-----+
+[cloudshell-user@ip-10-130-6-101 ~]$ ssh-add ~/.ssh/id_rsa
+Identity added: /home/cloudshell-user/.ssh/id_rsa (pandasrikant365@gmail.com)
+[cloudshell-user@ip-10-130-6-101 ~]$ ssh-add -l
+4096 SHA256:KZvAxyy1CylcPM9c26FSSEKg5s1cQP8hoUW7SaCjH/4 pandasrikant365@gmail.com (RSA)
+[cloudshell-user@ip-10-130-6-101 ~]$ cat ~/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt9IGRxb5UFQTT6Na4sDBnNw02mgpVjpUrlHpL8e63TGXXi512W/wFOAhV+EaCIvvZO5CRkt9+dXvQoUo/YECp9kuqMihI1vBOSv5wERK48dCRu+rfOoVbqSEfsF+JuM0+dDIM9jvOrMutVw0NY2aKdV/nHYOebEKuaHAmEcb4A9iw/lf0uXweXli/CRSzROFgO9jsMJSRAcUD8PjugSLwLYD2RR9Rwv2V5E1Wjvhr+ZXgmieBeClhXOzNzPBGigDqfQiotUvTdhUIM50e1aVzfNl2NmkwCM80vIULFkPUEdOFDM779nITKJtFv4KwWDIPULaxlNCqFBReXIyXHPwMopUadmkGh2jfUi/vgskvWw2d9qJcBjdmXNKEpi3N6WWk+6OzmjSDIJYRqiNYmvDUkpaIkm+2PCndKCgvNC4AkX9yw1UY1cIOrBvvzUpDEUFEK6UNlMp5vb5l6J4z6tZRde0zzSRiQjkoE/kRKRWbTjnqx9MEPZ6Vp+DiNWRjk/kY4fIUFpXaVGv/aQsjbl2dFTEo3oEy1BaSI4QfIVYBqROcUl5pqhDyPRNdoSU8yCFxOmtHbz9J/VqnOkJPsDvzH7BToisgbmG/BYgdVMyw3/8sKB0+vc2nZleilnI4X0KQVoYS5GVoGTLwOEnqDcCRbFpRfrZJc/KS5u3TFlgnmQ== pandasrikant365@gmail.com
+[cloudshell-user@ip-10-130-6-101 ~]$ git remote set-url origin git@github.com:https://github.com/srikxcipher/CloudFormEZ.git
+[cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin master
+fatal: protocol 'git@github.com:https' is not supported
+[cloudshell-user@ip-10-130-6-101 ~]$ git remote -v
+origin  git@github.com:https://github.com/srikxcipher/CloudFormEZ.git (fetch)
+origin  git@github.com:https://github.com/srikxcipher/CloudFormEZ.git (push)
+[cloudshell-user@ip-10-130-6-101 ~]$ git remote set-url origin git@github.com:srikxcipher/CloudFormEZ.git
+[cloudshell-user@ip-10-130-6-101 ~]$ git remote -v
+origin  git@github.com:srikxcipher/CloudFormEZ.git (fetch)
+origin  git@github.com:srikxcipher/CloudFormEZ.git (push)
+[cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin master
+The authenticity of host 'github.com (20.207.73.82)' can't be established.
+ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+Enumerating objects: 13, done.
+Counting objects: 100% (13/13), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (13/13), 4.17 KiB | 854.00 KiB/s, done.
+Total 13 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: 
+remote: Create a pull request for 'master' on GitHub by visiting:
+remote:      https://github.com/srikxcipher/CloudFormEZ/pull/new/master
+remote: 
+To github.com:srikxcipher/CloudFormEZ.git
+ * [new branch]      master -> master
+branch 'master' set up to track 'origin/master'.
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline create-pipeline --pipeline file://pipeline.json
+
+Error parsing parameter '--pipeline': Unable to load paramfile file://pipeline.json: [Errno 2] No such file or directory: 'pipeline.json'
+[cloudshell-user@ip-10-130-6-101 ~]$ nano pipeline.json
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codebuild create-project --name cloud-formation-cicd-setup \
+> --source '{"type":"GITHUB","location":"https://github.com/srikxcipher/CloudFormEZ.git"}' \
+> --artifacts '{"type":"CODEPIPELINE"}' \
+> --environment '{"type":"LINUX_CONTAINER","image":"aws/codebuild/standard:5.0","computeType":"BUILD_GENERAL1_SMALL"}' \
+> --service-role "arn:aws:iam::your-account-id:role/service-role/AWSCodeBuildServiceRole"
+
+An error occurred (InvalidInputException) when calling the CreateProject operation: Invalid service role
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codebuild create-project --name cloud-formation-cicd-setup \
+> --source '{"type":"GITHUB","location":"https://github.com/srikxcipher/CloudFormEZ"}' \
+> --artifacts '{"type":"CODEPIPELINE"}' \
+> --environment '{"type":"LINUX_CONTAINER","image":"aws/codebuild/standard:5.0","computeType":"BUILD_GENERAL1_SMALL"}' \
+> --service-role "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole"
+
+An error occurred (InvalidInputException) when calling the CreateProject operation: CodeBuild is not authorized to perform: sts:AssumeRole on service role
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codebuild create-project --name cloud-formation-cicd-setup \
+> --source '{"type":"GITHUB","location":"https://github.com/srikxcipher/CloudFormEZ"}' \
+> --artifacts '{"type":"CODEPIPELINE"}' \
+> --environment '{"type":"LINUX_CONTAINER","image":"aws/codebuild/standard:5.0","computeType":"BUILD_GENERAL1_SMALL"}' \
+> --service-role "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole"
+
+An error occurred (InvalidInputException) when calling the CreateProject operation: Invalid input: when using CodePipeline both sourceType, and artifactType must be set to: CODEPIPELINE
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codebuild create-project --name cloud-formation-cicd-setup \
+> --source '{"type":"CODEPIPELINE"}' \
+> --artifacts '{"type":"CODEPIPELINE"}' \
+> --environment '{"type":"LINUX_CONTAINER","image":"aws/codebuild/standard:5.0","computeType":"BUILD_GENERAL1_SMALL"}' \
+> --service-role "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole"
+{
+    "project": {
+        "name": "cloud-formation-cicd-setup",
+        "arn": "arn:aws:codebuild:ap-south-1:471112533020:project/cloud-formation-cicd-setup",
+        "source": {
+            "type": "CODEPIPELINE",
+            "insecureSsl": false
+        },
+        "artifacts": {
+            "type": "CODEPIPELINE",
+            "name": "cloud-formation-cicd-setup",
+            "packaging": "NONE",
+            "encryptionDisabled": false
+        },
+        "cache": {
+            "type": "NO_CACHE"
+        },
+        "environment": {
+            "type": "LINUX_CONTAINER",
+            "image": "aws/codebuild/standard:5.0",
+            "computeType": "BUILD_GENERAL1_SMALL",
+            "environmentVariables": [],
+            "privilegedMode": false,
+            "imagePullCredentialsType": "CODEBUILD"
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline create-pipeline --pipeline file://pipeline.json
+
+Parameter validation failed:
+Missing required parameter in pipeline: "name"
+Missing required parameter in pipeline: "roleArn"
+Missing required parameter in pipeline: "stages"
+Unknown parameter in pipeline: "pipeline", must be one of: name, roleArn, artifactStore, artifactStores, stages, version, executionMode, pipelineType, variables, triggers
+[cloudshell-user@ip-10-130-6-101 ~]$ nano pipeline.json 
+[cloudshell-user@ip-10-130-6-101 ~]$ rm pipeline.json 
+[cloudshell-user@ip-10-130-6-101 ~]$ nano pipeline.json
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline create-pipeline --pipeline file://pipeline.json
+
+An error occurred (InvalidStructureException) when calling the CreatePipeline operation: CodePipeline is not authorized to perform AssumeRole on role arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline create-pipeline --pipeline file://pipeline.json
+
+An error occurred (ValidationException) when calling the CreatePipeline operation: Your pipeline may not have both 'pipeline.artifactStores' and 'pipeline.artifactStore'. Use one or the other to specify an artifact store for each region where you have an action.
+[cloudshell-user@ip-10-130-6-101 ~]$ nano pipeline.json                                                                                                                                   
+[cloudshell-user@ip-10-130-6-101 ~]$ rm pipeline.json 
+[cloudshell-user@ip-10-130-6-101 ~]$ nano pipeline.json
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline create-pipeline --pipeline file://pipeline.json
+
+Error parsing parameter '--pipeline': Invalid JSON: Expecting property name enclosed in double quotes: line 3 column 30 (char 49)
+JSON received: {
+    "pipeline": {
+        "name": "pipeline",  // Change this to your desired pipeline name
+        "roleArn": "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole",  // Replace with your service role ARN
+        "artifactStore": {
+            "type": "S3",
+            "location": "infrastructurecode001"  // Replace with your S3 bucket name
+        },
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "name": "SourceAction",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "ThirdParty",
+                            "provider": "GitHub",
+                            "version": "1"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "SourceOutput"
+                            }
+                        ],
+                        "configuration": {
+                            "Owner": "srikxcipher",  // Replace with your GitHub username
+                            "Repo": "CloudFormEZ",  // Replace with your repository name
+                            "Branch": "master",  // Change if your default branch is different
+                            "OAuthToken": "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"  // Replace with your GitHub OAuth token
+                        },
+                        "runOrder": 1
+                    }
+                ]
+            },
+            {
+                "name": "Build",
+                "actions": [
+                    {
+                        "name": "BuildAction",
+                        "actionTypeId": {
+                            "category": "Build",
+                            "owner": "AWS",
+                            "provider": "CodeBuild",
+                            "version": "1"
+                        },
+                        "inputArtifacts": [
+                            {
+                                "name": "SourceOutput"
+                            }
+                        ],
+                        "outputArtifacts": [
+                            {
+                                "name": "BuildOutput"
+                            }
+                        ],
+                        "configuration": {
+                            "ProjectName": "cloud-formation-cicd-setup"
+                        },
+                        "runOrder": 1
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+
+[cloudshell-user@ip-10-130-6-101 ~]$ nano pipeline.json 
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline create-pipeline --pipeline file://pipeline.json
+
+Parameter validation failed:
+Missing required parameter in pipeline: "name"
+Missing required parameter in pipeline: "roleArn"
+Missing required parameter in pipeline: "stages"
+Unknown parameter in pipeline: "pipeline", must be one of: name, roleArn, artifactStore, artifactStores, stages, version, executionMode, pipelineType, variables, triggers
+[cloudshell-user@ip-10-130-6-101 ~]$ rm pipeline.json 
+[cloudshell-user@ip-10-130-6-101 ~]$ ls
+infrastructurecode.yaml
+[cloudshell-user@ip-10-130-6-101 ~]$ nano MyPipeline.json
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline create-pipeline --pipeline file://MyPipeline.json
+{
+    "pipeline": {
+        "name": "MyPipeline",
+        "roleArn": "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole",
+        "artifactStore": {
+            "type": "S3",
+            "location": "infrastructurecode001"
+        },
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "name": "SourceAction",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "ThirdParty",
+                            "provider": "GitHub",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "Branch": "master",
+                            "OAuthToken": "****",
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline list-pipelines
+{
+    "pipelines": [
+        {
+            "name": "MyPipeline",
+            "version": 1,
+            "pipelineType": "V1",
+            "executionMode": "SUPERSEDED",
+            "created": "2024-09-21T15:49:09.394000+00:00",
+            "updated": "2024-09-21T15:49:09.394000+00:00"
+        }
+    ]
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline get-pipeline --name MyPipeline
+{
+    "pipeline": {
+        "name": "MyPipeline",
+        "roleArn": "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole",
+        "artifactStore": {
+            "type": "S3",
+            "location": "infrastructurecode001"
+        },
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "name": "SourceAction",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "ThirdParty",
+                            "provider": "GitHub",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "Branch": "master",
+                            "OAuthToken": "****",
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline list-pipelines
+{
+    "pipelines": [
+        {
+            "name": "MyPipeline",
+            "version": 1,
+            "pipelineType": "V1",
+            "executionMode": "SUPERSEDED",
+            "created": "2024-09-21T15:49:09.394000+00:00",
+            "updated": "2024-09-21T15:49:09.394000+00:00"
+        }
+    ]
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline list-pipelines
+{
+    "pipelines": [
+        {
+            "name": "MyPipeline",
+            "version": 1,
+            "pipelineType": "V1",
+            "executionMode": "SUPERSEDED",
+            "created": "2024-09-21T15:49:09.394000+00:00",
+            "updated": "2024-09-21T15:49:09.394000+00:00"
+        }
+    ]
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ start-pipeline-execution
+-bash: start-pipeline-execution: command not found
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline start-pipeline-execution --name MyPipeline
+{
+    "pipelineExecutionId": "61a917d1-c37c-4c3a-abc1-814731761a1c"
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline get-pipeline-execution --pipeline-name MyPipeline --pipeline-execution-id 61a917d1-c37c-4c3a-abc1-814731761a1c
+{
+    "pipelineExecution": {
+        "pipelineName": "MyPipeline",
+        "pipelineVersion": 1,
+        "pipelineExecutionId": "61a917d1-c37c-4c3a-abc1-814731761a1c",
+        "status": "Failed",
+        "artifactRevisions": [],
+        "trigger": {
+            "triggerType": "StartPipelineExecution",
+            "triggerDetail": "arn:aws:iam::471112533020:root"
+        },
+        "executionMode": "SUPERSEDED"
+    }
+}
+[cloudshell-user@ip-10-130-6-101 ~]$ touch aws_log.sh
+[cloudshell-user@ip-10-130-6-101 ~]$ chmod +x aws_log.sh
+[cloudshell-user@ip-10-130-6-101 ~]$ nano aws_log.sh
+[cloudshell-user@ip-10-130-6-101 ~]$ ./aws_log.sh aws s3 ls
+[cloudshell-user@ip-10-130-6-101 ~]$ cat aws_commands.log
+Command: aws s3 ls
+Output:
+2024-09-21 12:38:00 infrastructurecode001
 -----------------------------
+[cloudshell-user@ip-10-130-6-101 ~]$ ls
+aws_commands.log  aws_log.sh  infrastructurecode.yaml  MyPipeline.json
+[cloudshell-user@ip-10-130-6-101 ~]$ git add .
+[cloudshell-user@ip-10-130-6-101 ~]$ git commit -m "Final stage commit"
+[master 9764bb6] Final stage commit
+ 7 files changed, 138 insertions(+)
+ create mode 100644 .ssh/id_rsa
+ create mode 100644 .ssh/id_rsa.pub
+ create mode 100644 .ssh/known_hosts
+ create mode 100644 .ssh/known_hosts.old
+ create mode 100644 MyPipeline.json
+ create mode 100644 aws_commands.log
+ create mode 100755 aws_log.sh
+[cloudshell-user@ip-10-130-6-101 ~]$ git push origin master
+Enumerating objects: 11, done.
+Counting objects: 100% (11/11), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (10/10), 4.58 KiB | 1.15 MiB/s, done.
+Total 10 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 1 local object.
+To github.com:srikxcipher/CloudFormEZ.git
+   73e7c00..9764bb6  master -> master
+[cloudshell-user@ip-10-130-6-101 ~]$ cat aws_log.sh 
+#!/bin/bash
+
+# Log file where commands and outputs will be stored
+LOGFILE="aws_commands.log"
+
+# Log the command
+echo "Command: $@" >> "$LOGFILE"
+
+# Execute the command and log the output
+{
+    echo "Output:"
+    "$@"
+    echo "-----------------------------"
+} >> "$LOGFILE" 2>&1
+
+[cloudshell-user@ip-10-130-6-101 ~]$ cat aws_commands.log 
+Command: aws s3 ls
+Output:
+2024-09-21 12:38:00 infrastructurecode001
+-----------------------------
+[cloudshell-user@ip-10-130-6-101 ~]$ nano aws_log.sh
+[cloudshell-user@ip-10-130-6-101 ~]$ aws s3 ls >> aws_commands1.txt 2>&1                                                                                                                  
+[cloudshell-user@ip-10-130-6-101 ~]$ echo "Command: aws s3 ls" >> aws_commands.txt
+[cloudshell-user@ip-10-130-6-101 ~]$ nano aws_log.sh 
+[cloudshell-user@ip-10-130-6-101 ~]$ ls
+aws_commands1.txt  aws_commands.log  aws_commands.txt  aws_log.sh  infrastructurecode.yaml  MyPipeline.json
+[cloudshell-user@ip-10-130-6-101 ~]$ nano aws_commands1.txt 
+[cloudshell-user@ip-10-130-6-101 ~]$ nano aws_commands.
+aws_commands.log  aws_commands.txt  
+[cloudshell-user@ip-10-130-6-101 ~]$ nano aws_commands.txt 
+[cloudshell-user@ip-10-130-6-101 ~]$ 
+[cloudshell-user@ip-10-130-6-101 ~]$ nano aws_commands.log                                                                                                                                
+[cloudshell-user@ip-10-130-6-101 ~]$ rm aws_commands.txt
+[cloudshell-user@ip-10-130-6-101 ~]$ rm aws_commands1.txt
+[cloudshell-user@ip-10-130-6-101 ~]$ ls
+aws_commands.log  aws_log.sh  infrastructurecode.yaml  MyPipeline.json
+[cloudshell-user@ip-10-130-6-101 ~]$ 
