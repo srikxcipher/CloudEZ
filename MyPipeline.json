@@ -1,0 +1,65 @@
+{
+    "name": "MyPipeline",
+    "roleArn": "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole",
+    "artifactStore": {
+        "type": "S3",
+        "location": "infrastructurecode001"
+    },
+    "stages": [
+        {
+            "name": "Source",
+            "actions": [
+                {
+                    "name": "SourceAction",
+                    "actionTypeId": {
+                        "category": "Source",
+                        "owner": "ThirdParty",
+                        "provider": "GitHub",
+                        "version": "1"
+                    },
+                    "outputArtifacts": [
+                        {
+                            "name": "SourceOutput"
+                        }
+                    ],
+                    "configuration": {
+                        "Owner": "srikxcipher",
+                        "Repo": "CloudFormEZ",
+                        "Branch": "master",
+                        "OAuthToken": "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"
+                    },
+                    "runOrder": 1
+                }
+            ]
+        },
+        {
+            "name": "Build",
+            "actions": [
+                {
+                    "name": "BuildAction",
+                    "actionTypeId": {
+                        "category": "Build",
+                        "owner": "AWS",
+                        "provider": "CodeBuild",
+                        "version": "1"
+                    },
+                    "inputArtifacts": [
+                        {
+                            "name": "SourceOutput"
+                        }
+                    ],
+                    "outputArtifacts": [
+                        {
+                            "name": "BuildOutput"
+                        }
+                    ],
+                    "configuration": {
+                        "ProjectName": "cloud-formation-cicd-setup"
+                    },
+                    "runOrder": 1
+                }
+            ]
+        }
+    ]
+}
+

@@ -1,0 +1,4 @@
+Command: aws s3 ls
+Output:
+2024-09-21 12:38:00 infrastructurecode001
+-----------------------------
