@@ -1,5 +1,3 @@
-Command: aws s3 ls
-Output:
 2024-09-21 12:38:00 infrastructurecode001
 [cloudshell-user@ip-10-130-6-101 ~]$ 
 [cloudshell-user@ip-10-130-6-101 ~]$ aws ec2 describe-instances --instance-ids i-001e36e5e566cf598 --query 'Reservations[*].Instances[*].State.Name'
@@ -354,7 +352,7 @@ An error occurred (ValidationError) when calling the UpdateStack operation: Temp
     "TopicArn": "arn:aws:sns:ap-south-1:471112533020:HighCPUAlerts"
 }
 [cloudshell-user@ip-10-130-6-101 ~]$ aws sns subscribe --topic-arn arn:aws:sns:ap-south-1:471112533020:HighCPUAlerts \
->     --protocol email --notification-endpoint darknightarises321@gmail.com
+>     --protocol email --notification-endpoint user@gmail.com
 {
     "SubscriptionArn": "pending confirmation"
 }
@@ -393,36 +391,9 @@ An error occurred (ValidationError) when calling the UpdateStack operation: Temp
     ]
 }
 [cloudshell-user@ip-10-130-6-101 ~]$ git init
-hint: Using 'master' as the name for the initial branch. This default branch name
-hint: is subject to change. To configure the initial branch name to use in all
-hint: of your new repositories, which will suppress this warning, call:
-hint: 
-hint:   git config --global init.defaultBranch <name>
-hint: 
-hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
-hint: 'development'. The just-created branch can be renamed via this command:
-hint: 
-hint:   git branch -m <name>
-Initialized empty Git repository in /home/cloudshell-user/.git/
-[cloudshell-user@ip-10-130-6-101 ~]$ git add .
-[cloudshell-user@ip-10-130-6-101 ~]$ git commit -m "Initial commit of CloudFormation template"
-Author identity unknown
-
-*** Please tell me who you are.
-
-Run
-
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
-
-to set your account's default identity.
-Omit --global to set the identity only in this repository.
-
-fatal: empty ident name (for <cloudshell-user@ip-10-130-6-101.ap-south-1.compute.internal>) not allowed
-[cloudshell-user@ip-10-130-6-101 ~]$ Omit --global
--bash: Omit: command not found
-[cloudshell-user@ip-10-130-6-101 ~]$ git config --global user.email "pandasrikant365@gmail.com"
-[cloudshell-user@ip-10-130-6-101 ~]$ git config --global user.name "srikxcipher"
+Initialized empty Git repository in /home/cloudshell-user/.git
+[cloudshell-user@ip-10-130-6-101 ~]$ git config --global user.email "user@gmail.com"
+[cloudshell-user@ip-10-130-6-101 ~]$ git config --global user.name "user"
 [cloudshell-user@ip-10-130-6-101 ~]$ git --version
 git version 2.40.1
 [cloudshell-user@ip-10-130-6-101 ~]$ git init
@@ -440,21 +411,21 @@ Reinitialized existing Git repository in /home/cloudshell-user/.git/
  create mode 100644 .zprofile
  create mode 100644 .zshrc
  create mode 100644 infrastructurecode.yaml
-[cloudshell-user@ip-10-130-6-101 ~]$ git remote add origin https://github.com/srikxcipher/CloudFormEZ.git
+[cloudshell-user@ip-10-130-6-101 ~]$ git remote add origin https://github.com/user/CloudFormEZ.git
 [cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin master
 Username for 'https://github.com': ^C
 [cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin main
 error: src refspec main does not match any
-error: failed to push some refs to 'https://github.com/srikxcipher/CloudFormEZ.git'
+error: failed to push some refs to 'https://github.com/user/CloudFormIQ.git'
 [cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin master
-Username for 'https://github.com': srikxcipher
-Password for 'https://srikxcipher@github.com': 
+Username for 'https://github.com': 
+Password for 'https://user@github.com': 
 remote: Support for password authentication was removed on August 13, 2021.
 remote: Please see https://docs.github.com/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
-fatal: Authentication failed for 'https://github.com/srikxcipher/CloudFormEZ.git/'
+fatal: Authentication failed for 'https://github.com/user/CloudFormIQ.git/'
 [cloudshell-user@ip-10-130-6-101 ~]$ eval "$(ssh-agent -s)"
 Agent pid 623
-[cloudshell-user@ip-10-130-6-101 ~]$ ssh-keygen -t rsa -b 4096 -C "pandasrikant365@gmail.com"
+[cloudshell-user@ip-10-130-6-101 ~]$ ssh-keygen -t rsa -b 4096 -C "user@gmail.com"
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/cloudshell-user/.ssh/id_rsa):       
 Created directory '/home/cloudshell-user/.ssh'.
@@ -463,7 +434,7 @@ Enter same passphrase again:
 Your identification has been saved in /home/cloudshell-user/.ssh/id_rsa
 Your public key has been saved in /home/cloudshell-user/.ssh/id_rsa.pub
 The key fingerprint is:
-SHA256:KZvAxyy1CylcPM9c26FSSEKg5s1cQP8hoUW7SaCjH/4 pandasrikant365@gmail.com
+SHA256:KZvAxyy1CylcPM9c26FSSEKg5s1cQP8hoUW7SaCjH/4 user@gmail.com
 The key's randomart image is:
 +---[RSA 4096]----+
 |  o*++.          |
@@ -477,21 +448,21 @@ The key's randomart image is:
 |    E            |
 +----[SHA256]-----+
 [cloudshell-user@ip-10-130-6-101 ~]$ ssh-add ~/.ssh/id_rsa
-Identity added: /home/cloudshell-user/.ssh/id_rsa (pandasrikant365@gmail.com)
+Identity added: /home/cloudshell-user/.ssh/id_rsa (user@gmail.com)
 [cloudshell-user@ip-10-130-6-101 ~]$ ssh-add -l
-4096 SHA256:KZvAxyy1CylcPM9c26FSSEKg5s1cQP8hoUW7SaCjH/4 pandasrikant365@gmail.com (RSA)
+4096 SHA256:KZvAxyy1CylcPM9c26FSSEKg5s1cQP8hoUW7SaCjH/4 user@gmail.com (RSA)
 [cloudshell-user@ip-10-130-6-101 ~]$ cat ~/.ssh/id_rsa.pub
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt9IGRxb5UFQTT6Na4sDBnNw02mgpVjpUrlHpL8e63TGXXi512W/wFOAhV+EaCIvvZO5CRkt9+dXvQoUo/YECp9kuqMihI1vBOSv5wERK48dCRu+rfOoVbqSEfsF+JuM0+dDIM9jvOrMutVw0NY2aKdV/nHYOebEKuaHAmEcb4A9iw/lf0uXweXli/CRSzROFgO9jsMJSRAcUD8PjugSLwLYD2RR9Rwv2V5E1Wjvhr+ZXgmieBeClhXOzNzPBGigDqfQiotUvTdhUIM50e1aVzfNl2NmkwCM80vIULFkPUEdOFDM779nITKJtFv4KwWDIPULaxlNCqFBReXIyXHPwMopUadmkGh2jfUi/vgskvWw2d9qJcBjdmXNKEpi3N6WWk+6OzmjSDIJYRqiNYmvDUkpaIkm+2PCndKCgvNC4AkX9yw1UY1cIOrBvvzUpDEUFEK6UNlMp5vb5l6J4z6tZRde0zzSRiQjkoE/kRKRWbTjnqx9MEPZ6Vp+DiNWRjk/kY4fIUFpXaVGv/aQsjbl2dFTEo3oEy1BaSI4QfIVYBqROcUl5pqhDyPRNdoSU8yCFxOmtHbz9J/VqnOkJPsDvzH7BToisgbmG/BYgdVMyw3/8sKB0+vc2nZleilnI4X0KQVoYS5GVoGTLwOEnqDcCRbFpRfrZJc/KS5u3TFlgnmQ== pandasrikant365@gmail.com
-[cloudshell-user@ip-10-130-6-101 ~]$ git remote set-url origin git@github.com:https://github.com/srikxcipher/CloudFormEZ.git
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt9IGRxb5UFQTT6Na4sDBnNw02mgpVjpUrlHpL8e63TGXXi512W/wFOAhV+EaCIvvZO5CRkt9+dXvQoUo/YECp9kuqMihI1vBOSv5wERK48dCRu+rfOoVbqSEfsF+JuM0+dDIM9jvOrMutVw0NY2aKdV/nHYOebEKuaHAmEcb4A9iw/lf0uXweXli/CRSzROFgO9jsMJSRAcUD8PjugSLwLYD2RR9Rwv2V5E1Wjvhr+ZXgmieBeClhXOzNzPBGigDqfQiotUvTdhUIM50e1aVzfNl2NmkwCM80vIULFkPUEdOFDM779nITKJtFv4KwWDIPULaxlNCqFBReXIyXHPwMopUadmkGh2jfUi/vgskvWw2d9qJcBjdmXNKEpi3N6WWk+6OzmjSDIJYRqiNYmvDUkpaIkm+2PCndKCgvNC4AkX9yw1UY1cIOrBvvzUpDEUFEK6UNlMp5vb5l6J4z6tZRde0zzSRiQjkoE/kRKRWbTjnqx9MEPZ6Vp+DiNWRjk/kY4fIUFpXaVGv/aQsjbl2dFTEo3oEy1BaSI4QfIVYBqROcUl5pqhDyPRNdoSU8yCFxOmtHbz9J/VqnOkJPsDvzH7BToisgbmG/BYgdVMyw3/8sKB0+vc2nZleilnI4X0KQVoYS5GVoGTLwOEnqDcCRbFpRfrZJc/KS5u3TFlgnmQ== user@gmail.com
+[cloudshell-user@ip-10-130-6-101 ~]$ git remote set-url origin git@github.com:https://github.com/user/CloudFormIQ.git
 [cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin master
 fatal: protocol 'git@github.com:https' is not supported
 [cloudshell-user@ip-10-130-6-101 ~]$ git remote -v
-origin  git@github.com:https://github.com/srikxcipher/CloudFormEZ.git (fetch)
-origin  git@github.com:https://github.com/srikxcipher/CloudFormEZ.git (push)
-[cloudshell-user@ip-10-130-6-101 ~]$ git remote set-url origin git@github.com:srikxcipher/CloudFormEZ.git
+origin  git@github.com:https://github.com/user/CloudFormIQ.git (fetch)
+origin  git@github.com:https://github.com/user/CloudFormIQ.git (push)
+[cloudshell-user@ip-10-130-6-101 ~]$ git remote set-url origin git@github.com:user/CloudFormIQ.git
 [cloudshell-user@ip-10-130-6-101 ~]$ git remote -v
-origin  git@github.com:srikxcipher/CloudFormEZ.git (fetch)
-origin  git@github.com:srikxcipher/CloudFormEZ.git (push)
+origin  git@github.com:user/CloudFormEZ.git (fetch)
+origin  git@github.com:user/CloudFormEZ.git (push)
 [cloudshell-user@ip-10-130-6-101 ~]$ git push -u origin master
 The authenticity of host 'github.com (20.207.73.82)' can't be established.
 ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
@@ -506,9 +477,9 @@ Writing objects: 100% (13/13), 4.17 KiB | 854.00 KiB/s, done.
 Total 13 (delta 0), reused 0 (delta 0), pack-reused 0
 remote: 
 remote: Create a pull request for 'master' on GitHub by visiting:
-remote:      https://github.com/srikxcipher/CloudFormEZ/pull/new/master
+remote:      https://github.com/user/CloudFormIQ/pull/new/master
 remote: 
-To github.com:srikxcipher/CloudFormEZ.git
+To github.com:user/CloudFormEZ.git
  * [new branch]      master -> master
 branch 'master' set up to track 'origin/master'.
 [cloudshell-user@ip-10-130-6-101 ~]$ aws codepipeline create-pipeline --pipeline file://pipeline.json
@@ -516,21 +487,21 @@ branch 'master' set up to track 'origin/master'.
 Error parsing parameter '--pipeline': Unable to load paramfile file://pipeline.json: [Errno 2] No such file or directory: 'pipeline.json'
 [cloudshell-user@ip-10-130-6-101 ~]$ nano pipeline.json
 [cloudshell-user@ip-10-130-6-101 ~]$ aws codebuild create-project --name cloud-formation-cicd-setup \
-> --source '{"type":"GITHUB","location":"https://github.com/srikxcipher/CloudFormEZ.git"}' \
+> --source '{"type":"GITHUB","location":"https://github.com/user/CloudFormIQ.git"}' \
 > --artifacts '{"type":"CODEPIPELINE"}' \
 > --environment '{"type":"LINUX_CONTAINER","image":"aws/codebuild/standard:5.0","computeType":"BUILD_GENERAL1_SMALL"}' \
 > --service-role "arn:aws:iam::your-account-id:role/service-role/AWSCodeBuildServiceRole"
 
 An error occurred (InvalidInputException) when calling the CreateProject operation: Invalid service role
 [cloudshell-user@ip-10-130-6-101 ~]$ aws codebuild create-project --name cloud-formation-cicd-setup \
-> --source '{"type":"GITHUB","location":"https://github.com/srikxcipher/CloudFormEZ"}' \
+> --source '{"type":"GITHUB","location":"https://github.com/user/CloudFormIQ"}' \
 > --artifacts '{"type":"CODEPIPELINE"}' \
 > --environment '{"type":"LINUX_CONTAINER","image":"aws/codebuild/standard:5.0","computeType":"BUILD_GENERAL1_SMALL"}' \
 > --service-role "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole"
 
 An error occurred (InvalidInputException) when calling the CreateProject operation: CodeBuild is not authorized to perform: sts:AssumeRole on service role
 [cloudshell-user@ip-10-130-6-101 ~]$ aws codebuild create-project --name cloud-formation-cicd-setup \
-> --source '{"type":"GITHUB","location":"https://github.com/srikxcipher/CloudFormEZ"}' \
+> --source '{"type":"GITHUB","location":"https://github.com/user/CloudFormIQ"}' \
 > --artifacts '{"type":"CODEPIPELINE"}' \
 > --environment '{"type":"LINUX_CONTAINER","image":"aws/codebuild/standard:5.0","computeType":"BUILD_GENERAL1_SMALL"}' \
 > --service-role "arn:aws:iam::471112533020:role/AWSCodeBuildServiceRole"
@@ -613,10 +584,10 @@ JSON received: {
                             }
                         ],
                         "configuration": {
-                            "Owner": "srikxcipher",  // Replace with your GitHub username
-                            "Repo": "CloudFormEZ",  // Replace with your repository name
+                            "Owner": "user",  // Replace with your GitHub username
+                            "Repo": "CloudFormIQ",  // Replace with your repository name
                             "Branch": "master",  // Change if your default branch is different
-                            "OAuthToken": "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"  // Replace with your GitHub OAuth token
+                            "OAuthToken": "."  // Replace with your GitHub OAuth token
                         },
                         "runOrder": 1
                     }
@@ -807,7 +778,7 @@ Compressing objects: 100% (10/10), done.
 Writing objects: 100% (10/10), 4.58 KiB | 1.15 MiB/s, done.
 Total 10 (delta 2), reused 0 (delta 0), pack-reused 0
 remote: Resolving deltas: 100% (2/2), completed with 1 local object.
-To github.com:srikxcipher/CloudFormEZ.git
+To github.com:user/CloudFormEZ.git
    73e7c00..9764bb6  master -> master
 [cloudshell-user@ip-10-130-6-101 ~]$ cat aws_log.sh 
 #!/bin/bash
